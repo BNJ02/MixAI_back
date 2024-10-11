@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { User } from './user/user.entity';
+import { UsersModule } from './user/users.module';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -12,11 +15,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'postgres',
       password: 'azerty',
       database: 'mixai',
-      entities: [],
+      entities: [User],
       synchronize: true,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
