@@ -10,7 +10,7 @@ import { User } from 'src/user/user.entity';
   imports: [
     TypeOrmModule.forFeature([User]), // Assurez-vous d'importer votre entité User
     JwtModule.register({
-      secret: 'your_secret_key', // Remplacez par votre clé secrète
+      secret: 'your_secret_key', // Clé secrète
       signOptions: { expiresIn: '60s' }, // Optionnel : temps d'expiration du token
     }),
   ],

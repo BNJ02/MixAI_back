@@ -28,7 +28,10 @@ export class AuthService {
 
   // Génération du JWT après validation de l'utilisateur
   async login(user: any) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = {
+      email: user.email,
+      sub: user.id,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

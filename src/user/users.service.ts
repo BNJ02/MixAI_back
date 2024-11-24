@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { UserDto } from 'src/dto/user.dto';
+import { from, map, Observable } from 'rxjs';
 
 @Injectable()
 export class UsersService {
@@ -45,14 +46,30 @@ export class UsersService {
 
   // Find user by id
   async findOneById(id: number): Promise<User> {
+    console.log('ID:', id);
     return this.usersRepository.findOne({ where: { id } });
   }
 
   // Find profile
   async findProfile(token: string): Promise<User> {
     const decoded = this.jwtService.decode(token) as any;
-    const userId = decoded?.sub;
-    return this.findOneById(userId);
+    const userEmail = decoded?.email;
+    return this.findOneByEmail(userEmail);
+  }
+
+  // Find profile by user id
+  public findProfileByUserId(userId: string): Observable<UserDto> {
+    return from(this.findOneById(Number(userId))).pipe(
+      map((user) => this._toUserDto(user)),
+    );
+  }
+
+  private _toUserDto(user: User): UserDto {
+    return {
+      email: user.email,
+      lastName: user.lastName,
+      firstName: user.firstName,
+    };
   }
 
   // Update profile
