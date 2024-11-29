@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/user.entity';
 import { UsersModule } from './user/users.module';
 import { AuthModule } from './auth/auth.module';
+import { GeminiModule } from './gemini/gemini.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     AuthModule,
     UsersModule,
+    GeminiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
