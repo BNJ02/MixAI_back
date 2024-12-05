@@ -12,6 +12,7 @@ export class GeminiService {
 
   async getPromptResponse(
     prompt: string,
+    generative_model: string,
     API_key: string,
   ): Promise<PromptResponseDto> {
     // Access the API_key
@@ -19,13 +20,14 @@ export class GeminiService {
 
     // For text-only input, use the gemini-1.5-flash model
     this.genAIModel = this.genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: generative_model,
     });
 
     const result = await this.genAIModel.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
+    console.log(generative_model);
     console.log(text);
 
     return { response: text } as PromptResponseDto;

@@ -34,7 +34,11 @@ export class GeminiController {
     console.log('GeminiAPIkey :', user.geminiAPIkey);
 
     return from(
-      this.appService.getPromptResponse(body.prompt, user.geminiAPIkey),
+      this.appService.getPromptResponse(
+        body.prompt,
+        body.model,
+        user.geminiAPIkey,
+      ),
     );
   }
 }
