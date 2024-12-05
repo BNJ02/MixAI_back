@@ -69,6 +69,7 @@ export class UsersService {
       email: user.email,
       lastName: user.lastName,
       firstName: user.firstName,
+      geminiAPIkey: user.geminiAPIkey,
     };
   }
 

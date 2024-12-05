@@ -16,4 +16,7 @@ export class User {
 
   @Column()
   lastName: string;
+
+  @Column()
+  geminiAPIkey: string | null;
 }

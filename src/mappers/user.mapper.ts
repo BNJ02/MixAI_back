@@ -7,6 +7,7 @@ export class UserMapper {
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
       email: user.email ?? '',
+      geminiAPIkey: user.geminiAPIkey ?? '',
     };
 
     return userDto;
