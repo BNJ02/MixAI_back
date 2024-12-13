@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Discussion } from 'src/discussion/discussion.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class User {
@@ -19,4 +20,7 @@ export class User {
 
   @Column()
   geminiAPIkey: string | null;
+
+  @OneToMany(() => Discussion, (discussion) => discussion.user)
+  discussion: Discussion[];
 }
