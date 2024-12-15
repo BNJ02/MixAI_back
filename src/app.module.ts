@@ -7,6 +7,8 @@ import { User } from './user/user.entity';
 import { UsersModule } from './user/users.module';
 import { AuthModule } from './auth/auth.module';
 import { GeminiModule } from './gemini/gemini.module';
+import { Discussion } from './discussion/discussion.entity';
+import { DiscussionModule } from './discussion/discussions.module';
 
 @Module({
   imports: [
@@ -17,12 +19,13 @@ import { GeminiModule } from './gemini/gemini.module';
       username: 'postgres',
       password: 'azerty',
       database: 'mixai',
-      entities: [User],
+      entities: [User, Discussion],
       synchronize: true,
     }),
     AuthModule,
     UsersModule,
     GeminiModule,
+    DiscussionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

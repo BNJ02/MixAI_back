@@ -11,7 +11,7 @@ export class DiscussionsService {
     private readonly discussionRepository: Repository<Discussion>,
   ) {}
 
-  async create(user: User, history: any): Promise<Discussion> {
+  async create(user: Partial<User>, history: any): Promise<Discussion> {
     const discussion = this.discussionRepository.create({ user, history });
     return this.discussionRepository.save(discussion);
   }
@@ -42,5 +42,9 @@ export class DiscussionsService {
 
     discussion.history = newHistory;
     return this.discussionRepository.save(discussion);
+  }
+
+  async remove(discussionId: number): Promise<void> {
+    await this.discussionRepository.delete(discussionId);
   }
 }

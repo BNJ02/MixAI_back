@@ -13,5 +13,6 @@ import { UsersModule } from 'src/user/users.module';
   ],
   controllers: [GeminiController],
   providers: [GeminiService],
+  exports: [GeminiService],
 })
 export class GeminiModule {}

@@ -1,48 +1,84 @@
-import { Controller, Post, Body, Param, Get, Put } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Put,
+  Req,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { DiscussionsService } from './discussions.service';
 import { GeminiService } from 'src/gemini/gemini.service';
+import { Discussion } from './discussion.entity';
+import { DiscussionDto } from 'src/dto/discussion.dto';
+// import { User } from 'src/user/user.entity';
+import { UsersService } from 'src/user/users.service';
 
 @Controller('discussions')
 export class DiscussionsController {
   constructor(
     private readonly discussionsService: DiscussionsService,
     private readonly geminiService: GeminiService,
+    private readonly usersService: UsersService,
   ) {}
 
-  @Post(':userId')
-  async create(
-    @Param('userId') userId: number,
-    @Body() body: { history: any },
-  ) {
-    return this.discussionsService.create({ id: userId } as any, body.history);
+  // Créer une nouvelle discussion
+  @Post()
+  create(
+    @Body() createDiscussionDto: Partial<Discussion>,
+  ): Promise<Discussion> {
+    return this.discussionsService.create(
+      createDiscussionDto.user,
+      createDiscussionDto.history,
+    );
   }
 
-  @Put(':discussionId')
+  // Continuer une discussion
+  @Put()
   async updateHistory(
-    @Param('discussionId') discussionId: number,
-    @Body() body: { newMessage: string },
-  ) {
-    // Récupérer l'historique existant
-    const discussion = await this.discussionsService.findOne(discussionId);
+    @Body() body: DiscussionDto,
+    @Req() request: any,
+  ): Promise<Discussion> {
+    const token = request.headers.authorization?.split(' ')[1];
+    console.log('Token for prompt:', token);
+    if (!token) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+    const user = await this.usersService.findProfile(token);
+    console.log('User for prompt:', user);
+    console.log('GeminiAPIkey :', user.geminiAPIkey);
 
-    // Ajouter le nouveau message utilisateur
-    const updatedHistory = [
-      ...discussion.history,
-      { role: 'user', parts: [{ text: body.newMessage }] },
-    ];
+    // Récupérer l'historique existant
+    const discussion = await this.discussionsService.findOne(body.discussionId);
 
     // Envoyer le message à l'API Gemini
-    // const botResponse = await this.geminiService.sendMessage(body.newMessage);
+    const AIResponse = await this.geminiService.getPromptResponseWithContext(
+      body.newMessage,
+      body.generative_model,
+      user.geminiAPIkey,
+      discussion.history,
+    );
 
-    // Ajouter la réponse du modèle
-    // updatedHistory.push({ role: 'model', parts: [{ text: botResponse }] });
+    // Afficher la réponse de l'API Gemini
+    console.log('AIResponse:', AIResponse);
 
     // Mettre à jour l'historique
-    return this.discussionsService.updateHistory(discussionId, updatedHistory);
+    return this.discussionsService.updateHistory(
+      body.discussionId,
+      discussion.history,
+    );
   }
 
-  @Get(':userId')
-  async findAllForUser(@Param('userId') userId: number) {
-    return this.discussionsService.findAllForUser(userId);
+  // Récupérer toutes les discussions pour un utilisateur
+  @Get('all')
+  async findAllForUser(@Body() userId: any): Promise<Discussion[]> {
+    return this.discussionsService.findAllForUser(userId.id);
+  }
+
+  // Supprimer une discussion
+  @Get('delete')
+  async remove(@Body() discussionId: any): Promise<void> {
+    await this.discussionsService.remove(+discussionId.id);
   }
 }
