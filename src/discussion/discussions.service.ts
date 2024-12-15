@@ -11,8 +11,8 @@ export class DiscussionsService {
     private readonly discussionRepository: Repository<Discussion>,
   ) {}
 
-  async create(user: Partial<User>, history: any): Promise<Discussion> {
-    const discussion = this.discussionRepository.create({ user, history });
+  async create(user: Partial<User>): Promise<Discussion> {
+    const discussion = this.discussionRepository.create({ user, history: [] });
     return this.discussionRepository.save(discussion);
   }
 

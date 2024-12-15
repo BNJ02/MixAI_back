@@ -14,6 +14,7 @@ import { Discussion } from './discussion.entity';
 import { DiscussionDto } from 'src/dto/discussion.dto';
 // import { User } from 'src/user/user.entity';
 import { UsersService } from 'src/user/users.service';
+import { PromptResponseDto } from 'src/dto/prompt-response.dto';
 
 @Controller('discussions')
 export class DiscussionsController {
@@ -25,13 +26,18 @@ export class DiscussionsController {
 
   // Créer une nouvelle discussion
   @Post()
-  create(
+  async create(
     @Body() createDiscussionDto: Partial<Discussion>,
+    @Req() request: any,
   ): Promise<Discussion> {
-    return this.discussionsService.create(
-      createDiscussionDto.user,
-      createDiscussionDto.history,
-    );
+    const token = request.headers.authorization?.split(' ')[1];
+    console.log('Token for prompt:', token);
+    if (!token) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+    const user = await this.usersService.findProfile(token);
+    console.log('User for prompt:', user);
+    return this.discussionsService.create(user);
   }
 
   // Continuer une discussion
@@ -39,7 +45,7 @@ export class DiscussionsController {
   async updateHistory(
     @Body() body: DiscussionDto,
     @Req() request: any,
-  ): Promise<Discussion> {
+  ): Promise<PromptResponseDto> {
     const token = request.headers.authorization?.split(' ')[1];
     console.log('Token for prompt:', token);
     if (!token) {
@@ -64,21 +70,30 @@ export class DiscussionsController {
     console.log('AIResponse:', AIResponse);
 
     // Mettre à jour l'historique
-    return this.discussionsService.updateHistory(
+    this.discussionsService.updateHistory(
       body.discussionId,
       discussion.history,
     );
+
+    // Envoyer la réponse de l'API Gemini
+    return AIResponse;
   }
 
   // Récupérer toutes les discussions pour un utilisateur
   @Get('all')
-  async findAllForUser(@Body() userId: any): Promise<Discussion[]> {
-    return this.discussionsService.findAllForUser(userId.id);
+  async findAllForUser(@Req() request: any): Promise<Discussion[]> {
+    const token = request.headers.authorization?.split(' ')[1];
+    console.log('Token for prompt:', token);
+    if (!token) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
+    const user = await this.usersService.findProfile(token);
+    return this.discussionsService.findAllForUser(user.id);
   }
 
   // Supprimer une discussion
-  @Get('delete')
-  async remove(@Body() discussionId: any): Promise<void> {
-    await this.discussionsService.remove(+discussionId.id);
+  @Post('delete')
+  async remove(@Body() body: any): Promise<void> {
+    return this.discussionsService.remove(body.id);
   }
 }
