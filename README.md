@@ -1,85 +1,144 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# MixAI Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+MixAI Backend est une application backend construite avec NestJS, permettant d'interfacer avec les API Gemini tout en gérant une base de données pour stocker les utilisateurs et les discussions avec les IA de Gemini. Ce projet a été réalisé dans le cadre de l'unité d'enseignement : "Programmation Web" durant mon cursus d'ingénieur de spécialité Systèmes Embarqués Communicants à l'École Centrale de Nantes.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Prérequis
 
-## Description
+- **Node.js** : Version 16 ou supérieure.
+- **NestJS CLI** : Installé globalement pour faciliter le développement.
+- **Base de données** : PostgreSQL (ou tout autre SGBD supporté par TypeORM).
+- **Clé API Gemini** : Nécessaire pour accéder aux services Gemini.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Installation
 
-## Project setup
+1. Clonez le répertoire du projet :
+   ```bash
+   git clone https://github.com/BNJ02/MixAI_back.git
+   cd mixai-backend
+   ```
+
+2. Installez les dépendances :
+   ```bash
+   npm install
+   ```
+
+3. Lancez les migrations pour configurer la base de données :
+   ```bash
+   npm run migration:run
+   ```
+
+## Fonctionnalités
+
+### 1. **Gestion des utilisateurs**
+- Enregistrement d'utilisateurs.
+- Authentification via JWT.
+- Gestion des profils utilisateurs.
+
+### 2. **Discussions avec les IA Gemini**
+- Envoi de messages aux IA via les API Gemini.
+- Stockage des discussions dans la base de données.
+- Récupération de l'historique des conversations par utilisateur.
+
+### 3. **APIs REST**
+#### Endpoints principaux :
+- **/users - POST** : Créé un compte utilisateur
+- **/users - GET** : Récupère tous les utilisateurs
+- **/users/profile - GET** : Récupère le profile de l'utilisateur
+- **/users/update - PATCH** : Modifie le profile d'un utilisateur
+- **/gemini - POST** : Obtenir une réponse à un prompt sans contexte
+- **/discussions - POST** : Créer une discussion
+- **/discussions - PUT** : Continuer une discussion directement avec le modèle d'IA sélectionné (avec tout le contexte de la discussion pris en compte par l'IA)
+- **/discussions/all - GET** : Récupérer toutes les discussions pour un utilisateur
+- **/discussions/delete - POST** : Supprimer une discussion
+
+### 4. **Base de données**
+- **Users** :
+  - ID, prenom, nom, email, mot de passe hashé et la clef API Gemini.
+- **Discussions** :
+  - ID, user (relation), historique.
+
+## Lancer le projet
+
+### En mode développement
 
 ```bash
-$ npm install
+npm run start:dev
 ```
 
-## Compile and run the project
+L'application sera disponible sur `http://localhost:3000`.
 
-```bash
-# development
-$ npm run start
+### En mode production
 
-# watch mode
-$ npm run start:dev
+1. Construisez l'application :
+   ```bash
+   npm run build
+   ```
 
-# production mode
-$ npm run start:prod
+2. Lancez l'application :
+   ```bash
+   npm run start:prod
+   ```
+
+## Structure du projet
+
+```
++---src
+|   |   app.controller.spec.ts
+|   |   app.controller.ts
+|   |   app.module.ts
+|   |   app.service.ts
+|   |   main.ts
+|   |   
+|   +---auth
+|   |       auth.controller.ts
+|   |       auth.module.ts
+|   |       auth.service.ts
+|   |       
+|   +---decorators
+|   |       user.decorator.ts
+|   |       
+|   +---discussion
+|   |       discussion.entity.ts
+|   |       discussions.controller.ts
+|   |       discussions.module.ts
+|   |       discussions.service.ts
+|   |       
+|   +---dto
+|   |       discussion.dto.ts
+|   |       prompt-response.dto.ts
+|   |       prompt.dto.ts
+|   |       user.dto.ts
+|   |       
+|   +---gemini
+|   |       gemini.controller.ts
+|   |       gemini.module.ts
+|   |       gemini.service.ts
+|   |       
+|   +---mappers
+|   |       user.mapper.ts
+|   |       
+|   +---user
+|           user.entity.ts
+|           users.controller.ts
+|           users.module.ts
+|           users.service.ts
 ```
 
-## Run tests
+## Contributions
 
-```bash
-# unit tests
-$ npm run test
+Les contributions sont les bienvenues !
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+1. Forkez le projet.
+2. Créez une nouvelle branche :
+   ```bash
+   git checkout -b feature/your-feature
+   ```
+3. Faites vos modifications et validez-les :
+   ```bash
+   git commit -m "Add your feature"
+   ```
+4. Poussez les modifications :
+   ```bash
+   git push origin feature/your-feature
+   ```
+5. Créez une pull request.
