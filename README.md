@@ -1,20 +1,20 @@
 # MixAI Backend
 
-MixAI Backend est une application backend construite avec NestJS, permettant d'interfacer avec les API Gemini tout en gérant une base de données pour stocker les utilisateurs et les discussions avec les IA de Gemini. Ce projet a été réalisé dans le cadre de l'unité d'enseignement : "Programmation Web" durant mon cursus d'ingénieur de spécialité Systèmes Embarqués Communicants à l'École Centrale de Nantes.
+MixAI Backend est une application backend construite avec NestJS, permettant d'interfacer avec les API Gemini tout en gérant une base de données pour stocker les utilisateurs et les discussions avec les IA de Gemini. Ce projet a été réalisé dans le cadre de l'unité d'enseignement : "Programmation Web", dirigé par Baptiste Roux, durant mon cursus d'ingénieur de spécialité Systèmes Embarqués Communicants à l'École Centrale de Nantes.
 
 ## Prérequis
 
 - **Node.js** : Version 16 ou supérieure.
 - **NestJS CLI** : Installé globalement pour faciliter le développement.
 - **Base de données** : PostgreSQL (ou tout autre SGBD supporté par TypeORM).
-- **Clé API Gemini** : Nécessaire pour accéder aux services Gemini.
+- **Clé API Gemini** : Nécessaire pour accéder aux services Gemini, veuillez vous en procurer une à cette page : https://ai.google.dev/gemini-api/docs/api-key ..
 
 ## Installation
 
 1. Clonez le répertoire du projet :
    ```bash
    git clone https://github.com/BNJ02/MixAI_back.git
-   cd mixai-backend
+   cd MixAI_back
    ```
 
 2. Installez les dépendances :
